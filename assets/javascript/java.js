@@ -1,8 +1,9 @@
 var config = {
-	apiKey: "AIzaSyA_QypGPkcjPtylRDscf7-HQl8ribnFeIs",
-	authDomain: "time-sheet-55009.firebaseapp.com",
-	databaseURL: "https://time-sheet-55009.firebaseio.com",
-	storageBucket: "time-sheet-55009.appspot.com",
+	apiKey: "AIzaSyCnGq1BCxGTMHEZ1_Icf3_H6Dxt_YlkLiQ",
+    authDomain: "traintracker-a9044.firebaseapp.com",
+    databaseURL: "https://traintracker-a9044.firebaseio.com",
+    storageBucket: "",
+    messagingSenderId: "805022617906"
 };
 firebase.initializeApp(config);
 
@@ -10,7 +11,7 @@ var database = firebase.database();
 
 
 // 2. Button for adding Employees
-$("#addEmployeeBtn").on("click", function(){
+$("#addTrain").on("click", function(){
 
 	// Grabs user input
 	var trainName = $("#TrainNameInput").val().trim();
@@ -19,30 +20,30 @@ $("#addEmployeeBtn").on("click", function(){
 	var frequency = $("#FreqInput").val().trim();
 
 	// Creates local "temporary" object for holding employee data
-	var newEmp = {
-		name:  empName,
-		role: empRole,
-		start: empStart,
-		rate: empRate
+	var newTrain = {
+		name:  trainName,
+		Destination: destination,
+		firstTrain: startTime,
+		freq: frequency
 	}
 
 	// Uploads employee data to the database
-	database.ref().push(newEmp);
+	database.ref().push(newTrain);
 
 	// Logs everything to console
-	console.log(newEmp.name);
-	console.log(newEmp.role);
-	console.log(newEmp.start);
-	console.log(newEmp.rate)
+	console.log(newTrain.name);
+	console.log(newTrain.Destination);
+	console.log(newTrain.firstTrain);
+	console.log(newTrain.freq);
 
 	// Alert
-	alert("Employee successfully added");
+	alert("Train successfully added");
 
 	// Clears all of the text-boxes
-	$("#employeeNameInput").val("");
-	$("#roleInput").val("");
+	$("#TrainNameInput").val("");
+	$("#DestInput").val("");
 	$("#startInput").val("");
-	$("#rateInput").val("");
+	$("#FreqInput").val("");
 
 	// Prevents moving to new page
 	return false;
@@ -55,29 +56,29 @@ database.ref().on("child_added", function(childSnapshot, prevChildKey){
 	console.log(childSnapshot.val());
 
 	// Store everything into a variable.
-	var empName = childSnapshot.val().name;
-	var empRole = childSnapshot.val().role;
-	var empStart = childSnapshot.val().start;
-	var empRate = childSnapshot.val().rate;
+	var trainName = childSnapshot.val().name;
+	var trainDest = childSnapshot.val().Destination;
+	var trainTime = childSnapshot.val().firstTrain;
+	var trainFreq = childSnapshot.val().freq;
 
 	// Employee Info
-	console.log(empName);
-	console.log(empRole);
-	console.log(empStart);
-	console.log(empRate);
+	console.log(trainName);
+	console.log(trainDest);
+	console.log(trainTime);
+	console.log(trainFreq);
 
 	// Prettify the employee start
-	var empStartPretty = moment.unix(empStart).format("MM/DD/YY");
+	var trainStart = moment.unix(trainTime).format("HH:mm");
 	// Calculate the months worked using hardconre math
 	// To calculate the months worked
-	var empMonths = moment().diff(moment.unix(empStart, 'X'), "months");
-	console.log(empMonths);
+	var next = moment().diff(moment.unix(empStart, 'X'), "minutes");
+	console.log(next);
 
 	// Calculate the total billed rate
-	var empBilled = empMonths * empRate;
-	console.log(empBilled);
+	var minsAway = 0;
+	console.log(minsAway);
 
 	// Add each train's data into the table
-	$("#employeeTable > tbody").append("<tr><td>" + empName + "</td><td>" + empRole + "</td><td>" + empStartPretty + "</td><td>" + empMonths + "</td><td>" + empRate + "</td><td>" + empBilled + "</td></tr>");
+	$("#trainTable > tbody").append("<tr><td>" + trainName + "</td><td>" + trainDest + "</td><td>" + trainFreq + "</td><td>" + next + "</td><td>" + minsAway + "</td></tr>");
 
 });
